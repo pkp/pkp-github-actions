@@ -287,7 +287,7 @@ runs:
         echo "status=:red_circle:" >> $GITHUB_OUTPUT
         cd ~/${{matrix.application ||  inputs.application || github.event.repository.name }} 
       
-        ${{ github.workspace }}/pkp-github-actions/.github/actions/run-unit-tests.sh -CcPpd
+        ${{ github.workspace }}/pkp-github-actions/.github/actions/run-unit-tests.sh -CcPpJjd
         duration=$(date -d@$(($(date -u +%s) - $start_time)) -u +%H:%M:%S) 
         echo "duration=$duration" >> $GITHUB_OUTPUT
         echo "status=:white_check_mark:" >> $GITHUB_OUTPUT

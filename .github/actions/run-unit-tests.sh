@@ -5,8 +5,10 @@
 # runAllTests.sh [options]
 #  -C Include class tests in lib/pkp.
 #  -P Include plugin tests in lib/pkp.
+#  -J Include job tests in lib/pkp.
 #  -c Include class tests in application.
 #  -p Include plugin tests in application.
+#  -j Include job tests in application.
 #  -d Display debug output from phpunit.
 # If no options are specified, then all tests will be executed.
 #

@@ -29,6 +29,8 @@ inputs:
     required: false
   DATASETS_ACCESS_KEY:
     required: false
+  phpstan:
+    required: false
 
 runs:
   using: "composite"
@@ -193,6 +195,14 @@ runs:
         mkdir -p ~/bin
 
       shell: bash
+
+    - name: Run PHPStan
+      if: ${{ matrix.validate == 'validate' &&  matrix.phpstan == 'true'}}
+      run: |
+        cd ~/${{matrix.application ||  inputs.application || github.event.repository.name }}
+        composer require --dev phpstan/phpstan
+        echo "Running PHPStan with configuration file phpstan.neo"
+        vendor/bin/phpstan analyse --configuration=phpstan.neon
 
     - name: Install validation tools
       if: ${{ matrix.validate == 'validate'}}

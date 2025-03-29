@@ -203,6 +203,7 @@ runs:
         composer require --dev phpstan/phpstan
         echo "Running PHPStan with configuration file phpstan.neo"
         vendor/bin/phpstan analyse --configuration=phpstan.neon
+      shell: bash
 
     - name: Install validation tools
       if: ${{ matrix.validate == 'validate'}}

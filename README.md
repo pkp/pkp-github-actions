@@ -260,5 +260,44 @@ steps:
 ## Acknowledgements
 - During the development: chat.openai.com used as a help tool
 
-## TODO
+
+### PHPStan integration
+
+ pkp-github-actions was extened to support phpstan. Existing  application specific files can be integrated using the following two steps.
+ 
+ 
+ 1. Extend the tests e.g. [omp](https://github.com/withanage/omp/blob/php-stan/.github/workflows/stable-3_3_0.yml#L18) 
+ 
+ ```yml
+    - php-version: 8.0
+    validate: 'validate'
+    phpstan: 'true'
+ ```
+ 
+ 2. Create a phpstan.neon file for the application and the branch and define the folders you would like to scan. 
+      https://github.com/withanage/omp/blob/php-stan/phpstan.neon
+
+
+
+ 
+
+
+#### Current issues
+
+1.  Namespaces may not  is not working correctly, as global variables  have to be explicitly defined.
+variables.  e.g. `define('BASE_SYS_DIR', dirname(INDEX_FILE_LOCATION));`
+
+2.  There may be custom definitions needed for discovering file paths. https://phpstan.org/user-guide/discovering-symbols
+
+ Sample OMP tests, failing 
+ 
+ - https://github.com/withanage/omp/actions/runs/14150332670/job/39642633082#step:3:3110
+ 
+
+
+ 
+
+
+
+
 

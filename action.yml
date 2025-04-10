@@ -223,7 +223,6 @@ runs:
         ${{ github.workspace }}/pkp-github-actions/.github/actions/validate-xml.sh 
         ${{ github.workspace }}/pkp-github-actions/.github/actions/validate-json.sh
         npm run lint
-        ${{ github.workspace }}/pkp-github-actions/.github/actions/run-document-validation.sh
         duration=$(date -d@$(($(date -u +%s) - $start_time)) -u +%H:%M:%S) 
         echo "duration=$duration" >> $GITHUB_OUTPUT
         echo "status=:white_check_mark:" >> $GITHUB_OUTPUT

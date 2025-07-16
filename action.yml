@@ -137,6 +137,12 @@ runs:
         git clone -b ${{ inputs.dataset_branch}} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 3
       shell: bash
 
+    - name: Install PKP application for a manually triggered workflow run
+      if: ${{  github.event_name  == 'workflow_dispatch' &&      (inputs.repository == '' && (matrix.application ||  inputs.application) == '' && inputs.branch == '')}}
+      run: |
+        echo "Install PKP application for manually triggered workflow run"
+        git clone -b ${{ inputs.dataset_branch}} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 3
+      shell: bash
 
     - name: pkp-lib for push and pull_request
       if:  ${{  inputs.repository != '' && inputs.branch != '' && (matrix.application != '' ||  inputs.application == '') }}

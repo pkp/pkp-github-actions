@@ -46,10 +46,12 @@ runs:
       with:
         postgresql-version: 16
 
-    - uses: upgundecha/start-sendria-github-action@v1.0.0
-      with:
-        smtp-port: 1025
-        http-port: 1080
+    - name: Start Sendria mail server
+      run: |
+        pip install sendria
+        sendria --smtp-port 1025 --http-port 1080 --db $RUNNER_TEMP/mails.sqlite &
+        sleep 2
+      shell: bash
 
     - name: Set environment variables
       run: |

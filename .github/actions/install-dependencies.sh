@@ -13,7 +13,8 @@ composer --version
 set -e
 
 # Search for composer.json files, and run Composer to install the dependencies.
-find . -maxdepth 4 -name composer.json -exec bash -c 'composer --no-ansi --working-dir="`dirname {}`" install --optimize-autoloader' ";"
+# COMPOSER_ALLOW_UNSAFE_PHAR_METADATA=1 is for PHP < 8; remove once OJS/OMP/OPS 3.3 testing is disabled.
+find . -maxdepth 4 -name composer.json -exec bash -c 'COMPOSER_ALLOW_UNSAFE_PHAR_METADATA=1 composer --no-ansi --working-dir="`dirname {}`" install --optimize-autoloader' ";"
 
 
 sudo npm cache clean -f

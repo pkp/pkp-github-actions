@@ -43,6 +43,7 @@ runs:
         ref: v1
 
     - uses: tj-actions/install-postgresql@v3
+      if: ${{matrix.database == 'pgsql'}}
       with:
         postgresql-version: 16
 

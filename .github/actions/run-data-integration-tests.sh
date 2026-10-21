@@ -20,7 +20,8 @@ if [[ "$NODE_VERSION" -gt "13"  ]]; then
   npx cypress run --headless --browser chrome --config '{"specPattern":["cypress/tests/data/**/*.cy.js"]}'
 fi
 
+# Cypress 5.6 (stable-3_3_0) breaks on Chrome 144+; use its bundled Electron instead.
 if [[ "$NODE_VERSION" -lt "13"  ]]; then
-  npx cypress run --headless --browser chrome --config integrationFolder=cypress/tests/data
+  npx cypress run --headless --browser electron --config integrationFolder=cypress/tests/data
 fi
 

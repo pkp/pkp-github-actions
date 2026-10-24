@@ -30,10 +30,11 @@ if [[ "$NODE_VERSION" -gt "13"  ]]; then
   fi
 fi
 
+# Cypress 5.6 (stable-3_3_0) breaks on Chrome 144+; use its bundled Electron instead.
 if [[ "$NODE_VERSION" -lt "13"  ]]; then
-    npx cypress run --headless --browser chrome  --config integrationFolder=lib/pkp/cypress/tests/integration
+    npx cypress run --headless --browser electron --config integrationFolder=lib/pkp/cypress/tests/integration
   if [ -d "cypress/tests/integration" ]; then
-    npx cypress run --headless --browser chrome --config integrationFolder=cypress/tests/integration
+    npx cypress run --headless --browser electron --config integrationFolder=cypress/tests/integration
   fi
 fi
 

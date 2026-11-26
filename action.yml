@@ -42,10 +42,25 @@ runs:
         path: pkp-github-actions
         ref: v1
 
-    - uses: tj-actions/install-postgresql@v3
+    - name: Install postgres server
       if: ${{matrix.database == 'pgsql'}}
-      with:
-        postgresql-version: 16
+      run: |
+        # GitHub's Ubuntu runners ship PostgreSQL preinstalled; only download it when missing
+        if compgen -G "/usr/lib/postgresql/*/bin/postgres" > /dev/null; then
+          echo "PostgreSQL already installed: $(ls /usr/lib/postgresql)"
+        else
+          APT_OPTS="-o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 -o DPkg::Lock::Timeout=120"
+          for attempt in 1 2 3; do
+            echo "Installing PostgreSQL (attempt $attempt)"
+            if timeout 300 sudo apt-get $APT_OPTS update -q && timeout 600 sudo apt-get $APT_OPTS install -q -y postgresql; then
+              break
+            fi
+            [ "$attempt" -eq 3 ] && { echo "PostgreSQL install failed"; exit 1; }
+            sleep $((attempt * 15))
+          done
+        fi
+        sudo systemctl enable --now postgresql
+      shell: bash
 
     - name: Start Sendria mail server
       run: |
@@ -76,7 +91,7 @@ runs:
       if: ${{matrix.database == 'pgsql'}}
       run: |
         echo "Configure postgres server"
-        sudo sed -i -E 's\peer|scram-sha-256\trust\g' /etc/postgresql/16/main/pg_hba.conf
+        sudo sed -i -E 's\peer|scram-sha-256\trust\g' /etc/postgresql/*/main/pg_hba.conf
         sudo systemctl restart postgresql
       shell: bash
 
@@ -122,7 +137,6 @@ runs:
         echo "Install PKP application for push"
         git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 3
       shell: bash
-
 
     - name: Install PKP application for pull_request
       if: ${{github.event_name == 'pull_request' && (inputs.repository == '' && (matrix.application || inputs.application) == '' && inputs.branch == '')}}

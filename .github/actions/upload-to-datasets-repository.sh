@@ -2,8 +2,8 @@
 
 # @file actions/upload-to-datasets-repository.sh
 #
-# Copyright (c) 2014-2021 Simon Fraser University
-# Copyright (c) 2010-2021 John Willinsky
+# Copyright (c) 2014-2026 Simon Fraser University
+# Copyright (c) 2010-2026 John Willinsky
 # Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 #
 # Script to run data build, unit, and integration tests.
@@ -48,7 +48,20 @@ git config --global user.name "pkp-machine-user"
 git config user.email   "$GITHUB_ACTOR+$GITHUB_ACTOR_ID@users.noreply.github.com"
 git add --all
 git commit -m "Update datasets ( ${APPLICATION} ${DATASET_BRANCH} ${TEST})"
-git push
+
+# Parallel jobs push to the same branch; rebase and retry if another push lands first
+for attempt in 1 2 3 4 5; do
+  if git push; then
+    break
+  fi
+  if [ "$attempt" -eq 5 ]; then
+    echo "Push to datasets repository failed after $attempt attempts."
+    exit 1
+  fi
+  echo "Push rejected (attempt $attempt); rebasing and retrying..."
+  sleep $((attempt * 5 + RANDOM % 10))
+  git pull --rebase origin main
+done
 git log --pretty=format:"%H  %an %ad%x09%s" -1
 cd ..
 
